@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Grass extends Entity {
     
-    int GRASS_WIDTH = 1000;
+    int GRASS_WIDTH = 1100;
     int SEGMENT_WIDTH = 100;
     int segments = GRASS_WIDTH / SEGMENT_WIDTH;
     int[] segmentX;
@@ -43,7 +43,7 @@ public class Grass extends Entity {
 
         int grassHeight = (int) (y1 + segmentOffset * (y2 - y1));
 
-        return grassHeight;
+        return grassHeight - 25;
     }
 
 }

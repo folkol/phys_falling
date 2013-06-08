@@ -1,8 +1,7 @@
 import java.awt.Graphics;
-import java.util.List;
 
 public abstract class Entity {
-    public void update(List<Entity> entities) {
+    public void update() {
 
     }
     abstract void draw(Graphics g);

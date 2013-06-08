@@ -1,10 +1,9 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,16 +12,17 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class FallingCar extends JFrame {
 
-    List<Entity> balls = new ArrayList<Entity>();
     private final Wheel wheel1;
     private final Grass grass;
     private final Wheel wheel2;
+    private int centerX;
+    private int centerY;
 
     public FallingCar() {
         super("Physics test");
         setContentPane(new ViewPort());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 850);
+        setSize(1600, 1200);
         setVisible(true);
         requestFocus();
         addKeyListener(new KeyListener() {
@@ -44,8 +44,8 @@ public class FallingCar extends JFrame {
         wheel1 = new Wheel();
         wheel2 = new Wheel();
         wheel1.x += 200;
-        balls.add(wheel1);
-        balls.add(wheel2);
+        wheel1.y = 300;
+        wheel2.y = 300;
         grass = new Grass();
 
         new Timer(1000 / 30, new ActionListener() {
@@ -58,33 +58,50 @@ public class FallingCar extends JFrame {
     }
 
     protected void updateWorld() {
-        restrictDistance(wheel1, wheel2);
-        for (Entity e : balls) {
-            e.update(balls);
-            if (e.dy > 0 && e.y > grass.getGrassHeight(e.x)) {
-                e.dy = (int) -(e.dy * 0.5);
-                e.y = grass.getGrassHeight(e.x);
-            }
+        restrictWheelDistance(wheel1, wheel2);
+        wheel1.update();
+        wheel2.update();
+
+        if (wheel1.dy > 0 && wheel1.y > grass.getGrassHeight(wheel1.x)) {
+            wheel1.dy = (int) -(wheel1.dy * 0.5);
+            wheel1.y = grass.getGrassHeight(wheel1.x);
         }
+
+        if (wheel2.dy > 0 && wheel2.y > grass.getGrassHeight(wheel2.x)) {
+            wheel2.dy = (int) -(wheel2.dy * 0.5);
+            wheel2.y = grass.getGrassHeight(wheel2.x);
+        }
+
     }
 
-    private void restrictDistance(Wheel wheel1, Wheel wheel2) {
+    private void restrictWheelDistance(Wheel wheel1, Wheel wheel2) {
+
+        centerX = (wheel1.x + wheel2.x) / 2;
+        centerY = (wheel1.y + wheel2.y) / 2;
+
         double carLength = 200;
         double distance = Math.sqrt((wheel1.x - wheel2.x) * (wheel1.x - wheel2.x) + (wheel1.y - wheel2.y) * (wheel1.y - wheel2.y));
-        System.out.println(distance);
 
-        double nudge = Math.abs(carLength - distance);
-        // wheel1.x -= nudge / 2;
-        // wheel2.x += nudge / 2;
+        double delta = Math.signum(wheel1.x - wheel2.x) * (distance - carLength);
+        System.out.println(delta);
+        wheel1.x -= delta / 2;
+        wheel2.x += delta / 2;
     }
 
     class ViewPort extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             grass.draw(g);
-            for (Entity e : balls) {
-                e.draw(g);
-            }
+
+            g.setColor(Color.RED);
+            wheel1.draw(g);
+            g.setColor(Color.BLUE);
+            wheel2.draw(g);
+            
+            g.setColor(Color.BLACK);
+            g.fillOval(centerX, centerY, 5, 5);
+            g.fillOval(wheel1.x, wheel1.y, 5, 5);
+            g.fillOval(wheel2.x, wheel2.y, 5, 5);
         }
     }
 
