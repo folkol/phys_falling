@@ -81,11 +81,20 @@ public class FallingCar extends JFrame {
 
         double carLength = 200;
         double distance = Math.sqrt((wheel1.x - wheel2.x) * (wheel1.x - wheel2.x) + (wheel1.y - wheel2.y) * (wheel1.y - wheel2.y));
+        int distanceX = Math.abs(wheel1.x - wheel2.x);
+        if (distanceX == 0) distanceX = 1;
+        int distanceY = Math.abs(wheel1.y - wheel2.y);
+        if (distanceY == 0) distanceY = 1;
 
-        double delta = Math.signum(wheel1.x - wheel2.x) * (distance - carLength);
+        double delta = distance - carLength;
+        double deltaX = delta * distanceX / distance;
+        double deltaY = delta * distanceY / distance;
+
         System.out.println(delta);
-        wheel1.x -= delta / 2;
-        wheel2.x += delta / 2;
+        wheel1.x -= deltaX / 2;
+        wheel2.x += deltaX / 2;
+        wheel1.y -= deltaY / 2;
+        wheel2.y += deltaY / 2;
     }
 
     class ViewPort extends JPanel {

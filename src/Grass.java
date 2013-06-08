@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Grass extends Entity {
     
-    int GRASS_WIDTH = 1100;
+    int GRASS_WIDTH = 900;
     int SEGMENT_WIDTH = 100;
     int segments = GRASS_WIDTH / SEGMENT_WIDTH;
     int[] segmentX;
