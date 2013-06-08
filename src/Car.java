@@ -33,25 +33,29 @@ public class Car {
         restrictWheelDistance(wheel1, wheel2);
     }
 
-    private void restrictWheelDistance(Wheel wheel12, Wheel wheel22) {
+    private void restrictWheelDistance(Wheel wheel1, Wheel wheel2) {
 
-        centerX = (wheel12.x + wheel22.x) / 2;
-        centerY = (wheel12.y + wheel22.y) / 2;
+        centerX = (wheel1.x + wheel2.x) / 2;
+        centerY = (wheel1.y + wheel2.y) / 2;
 
-        double distance = Math.sqrt((wheel12.x - wheel22.x) * (wheel12.x - wheel22.x) + (wheel12.y - wheel22.y) * (wheel12.y - wheel22.y));
-        int distanceX = Math.abs(wheel12.x - wheel22.x);
+        double distance = Math.sqrt((wheel1.x - wheel2.x) * (wheel1.x - wheel2.x) + (wheel1.y - wheel2.y) * (wheel1.y - wheel2.y));
+        int distanceX = Math.abs(wheel1.x - wheel2.x);
         if (distanceX == 0) distanceX = 1;
-        int distanceY = Math.abs(wheel12.y - wheel22.y);
+        int distanceY = Math.abs(wheel1.y - wheel2.y);
         if (distanceY == 0) distanceY = 1;
 
         double delta = distance - CAR_LENGTH;
         double deltaX = delta * distanceX / distance;
+        if (wheel1.x < wheel2.x) deltaX = -deltaX;
         double deltaY = delta * distanceY / distance;
+        if (wheel1.y < wheel2.y) deltaY = -deltaY;
 
-        wheel12.x -= deltaX / 2;
-        wheel22.x += deltaX / 2;
-        wheel12.y -= deltaY / 2;
-        wheel22.y += deltaY / 2;
+
+        wheel1.x -= deltaX / 2;
+        wheel2.x += deltaX / 2;
+        wheel1.y -= deltaY / 2;
+        wheel2.y += deltaY / 2;
+        System.out.println(String.format("delta: %s,  deltaX: %s, deltaY: %s", delta, deltaX, deltaY));
     }
 
     public int getX() {
@@ -60,6 +64,7 @@ public class Car {
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
+
         g2.setColor(Color.GRAY);
         g2.setStroke(new BasicStroke(10));
         g2.drawLine(wheel1.x, wheel1.y, wheel2.x, wheel2.y);
@@ -68,10 +73,11 @@ public class Car {
         g2.setColor(Color.BLUE);
         wheel2.draw(g2);
 
+        // Center markers
         g2.setColor(Color.BLACK);
-        g2.fillOval(centerX, centerY, 5, 5);
-        g2.fillOval(wheel1.x, wheel1.y, 5, 5);
-        g2.fillOval(wheel2.x, wheel2.y, 5, 5);
+        g2.fillOval(centerX - 5, centerY - 5, 10, 10);
+        g2.fillOval(wheel1.x - 5, wheel1.y - 5, 10, 10);
+        g2.fillOval(wheel2.x - 5, wheel2.y - 5, 10, 10);
     }
 }
 
@@ -82,8 +88,8 @@ class Wheel {
     public float dy;
 
     private static final double BOUNCYNESS = 0.3;
-    private static final double GRAVITY = 0.5;
-    public float ACCELERATION = 0.8f;
+    private static final double GRAVITY = 1;
+    public float ACCELERATION = 0.7f;
     public float MAX_SPEED = 15;
     public float SPEED = 0;
     public static final int WHEEL_SIZE = 75;
@@ -108,9 +114,13 @@ class Wheel {
         if (dy > 0 && y > grassHeight) {
             if (forward) {
                 SPEED += ACCELERATION;
-            } else {
+            }
+            if (!forward && SPEED > 0) {
                 SPEED -= RETARDATION;
             }
+
+            if (SPEED < 0) SPEED = 0;
+
             dy = (int) -(dy * BOUNCYNESS);
             // if (dy < 0.5) dy = 0;
             y = grassHeight;
