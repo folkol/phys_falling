@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Grass extends Entity {
     
-    public static int GRASS_WIDTH = 900;
+    public static int GRASS_WIDTH = 35000;
     int SEGMENT_WIDTH = 100;
     int segments = GRASS_WIDTH / SEGMENT_WIDTH;
     int[] segmentX;
@@ -19,17 +19,37 @@ public class Grass extends Entity {
         heights = new int[segments];
         heights[0] = 500;
         segmentX[0] = 0;
-        for (int i = 1; i < segments; i++) {
+        heights[1] = 500;
+        segmentX[1] = SEGMENT_WIDTH;
+        heights[2] = 500;
+        segmentX[2] = SEGMENT_WIDTH * 2;
+        for (int i = 3; i < segments; i++) {
             segmentX[i] = i * SEGMENT_WIDTH;
-            heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH) - SEGMENT_WIDTH / 2;
+            switch (random.nextInt(6)) {
+            case 0:
+                heights[i] = 500;
+                break;
+            // case 1:
+            // heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH / 10)
+            // - SEGMENT_WIDTH / 5;
+            // break;
+            // case 2:
+            // heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH / 4) -
+            // SEGMENT_WIDTH / 2;
+            // break;
+            default:
+                heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH / 10) - SEGMENT_WIDTH / 5;
+            }
         }
     }
 
     @Override
     void draw(Graphics g) {
-        ((Graphics2D) g).setStroke(new BasicStroke(20));
-        g.setColor(Color.GREEN);
-        g.drawPolyline(segmentX, heights, segments);
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setStroke(new BasicStroke(20));
+        g2d.setColor(Color.GREEN);
+        g2d.drawPolyline(segmentX, heights, segments);
     }
 
     public int getGrassHeight(int x) {

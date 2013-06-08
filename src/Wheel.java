@@ -4,10 +4,12 @@ public class Wheel extends Entity {
 
     private static final double BOUNCYNESS = 0.3;
     private static final double GRAVITY = 0.5;
-    public float ACCELERATION = (float) 0.1;
-    public float MAX_SPEED = 12;
+    public float ACCELERATION = (float) 0.5;
+    public float MAX_SPEED = 10;
     public float SPEED = 0;
-    public static final int WHEEL_SIZE = 75;
+    public static final int WHEEL_SIZE = 40;
+    private static final float RETARDATION = 0.2f;
+    public boolean forward = false;
 
     public Wheel() {
         x = 0;
@@ -20,15 +22,21 @@ public class Wheel extends Entity {
     }
 
     public void update(Grass grass) {
-        SPEED += ACCELERATION;
         if (SPEED > MAX_SPEED) SPEED = MAX_SPEED;
         x += SPEED;
         dy += GRAVITY;
         y += dy;
-        if (dy > 0 && y > grass.getGrassHeight(x)) {
+        int grassHeight = grass.getGrassHeight(x);
+        System.out.println(grassHeight);
+        if (dy > 0 && y > grassHeight) {
+            if (forward) {
+                SPEED += ACCELERATION;
+            } else {
+                SPEED -= RETARDATION;
+            }
             dy = (int) -(dy * BOUNCYNESS);
             // if (dy < 0.5) dy = 0;
-            y = grass.getGrassHeight(x);
+            y = grassHeight;
         }
     }
 }

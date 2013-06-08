@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.AffineTransform;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,6 +20,7 @@ public class FallingCar extends JFrame {
     private Wheel wheel2;
     private int centerX;
     private int centerY;
+    private final double CAR_LENGTH = 100;
 
     public FallingCar() {
         super("Physics test");
@@ -35,12 +37,21 @@ public class FallingCar extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_D) {
+                    wheel1.forward = false;
+                    wheel2.forward = false;
+                }
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     initWheels();
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_D) {
+                    wheel1.forward = true;
+                    wheel2.forward = true;
                 }
             }
         });
@@ -76,14 +87,13 @@ public class FallingCar extends JFrame {
         centerX = (wheel1.x + wheel2.x) / 2;
         centerY = (wheel1.y + wheel2.y) / 2;
 
-        double carLength = 200;
         double distance = Math.sqrt((wheel1.x - wheel2.x) * (wheel1.x - wheel2.x) + (wheel1.y - wheel2.y) * (wheel1.y - wheel2.y));
         int distanceX = Math.abs(wheel1.x - wheel2.x);
         if (distanceX == 0) distanceX = 1;
         int distanceY = Math.abs(wheel1.y - wheel2.y);
         if (distanceY == 0) distanceY = 1;
 
-        double delta = distance - carLength;
+        double delta = distance - CAR_LENGTH;
         double deltaX = delta * distanceX / distance;
         double deltaY = delta * distanceY / distance;
 
@@ -91,20 +101,25 @@ public class FallingCar extends JFrame {
         wheel2.x += deltaX / 2;
         wheel1.y -= deltaY / 2;
         wheel2.y += deltaY / 2;
-        System.out.println(deltaY);
     }
 
     class ViewPort extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
-            ((Graphics2D) g).setStroke(new BasicStroke(10));
+            Graphics2D graphics2d = (Graphics2D) g;
+
+            AffineTransform scrolling = new AffineTransform();
+            scrolling.translate(-wheel1.x + 300, 0);
+            graphics2d.setTransform(scrolling);
+
+            graphics2d.setStroke(new BasicStroke(10));
             g.setColor(Color.GREEN);
             g.fillRect(Grass.GRASS_WIDTH, 650 + (Wheel.WHEEL_SIZE / 2), 2000, 300);
 
             grass.draw(g);
 
             g.setColor(Color.GRAY);
-            ((Graphics2D) g).setStroke(new BasicStroke(10));
+            graphics2d.setStroke(new BasicStroke(10));
             g.drawLine(wheel1.x, wheel1.y, wheel2.x, wheel2.y);
             g.setColor(Color.RED);
             wheel1.draw(g);
@@ -116,7 +131,7 @@ public class FallingCar extends JFrame {
             g.fillOval(wheel1.x, wheel1.y, 5, 5);
             g.fillOval(wheel2.x, wheel2.y, 5, 5);
 
-            g.drawString("ESC = Restart", 10, 20);
+            g.drawString("SPACE = Restart", 10, 20);
         }
     }
 
