@@ -15,12 +15,15 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class FallingCar extends JFrame {
 
-    private Wheel wheel1;
+    public int x, y, dx, dy;
+
+    private Car wheel1;
     private Grass grass;
-    private Wheel wheel2;
+    private Car wheel2;
     private int centerX;
     private int centerY;
-    private final double CAR_LENGTH = 150;
+
+    private Car car;
 
     public FallingCar() {
         super("Physics test");
@@ -38,8 +41,7 @@ public class FallingCar extends JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    wheel1.forward = false;
-                    wheel2.forward = false;
+                    Car.forward(false);
                 }
             }
 
@@ -50,8 +52,7 @@ public class FallingCar extends JFrame {
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    wheel1.forward = true;
-                    wheel2.forward = true;
+                    Car.forward(true);
                 }
             }
         });
@@ -68,39 +69,13 @@ public class FallingCar extends JFrame {
     }
 
     private void initWheels() {
-        wheel1 = new Wheel();
-        wheel2 = new Wheel();
-        wheel1.x += 200;
-        wheel1.y = 300;
-        wheel2.y = 300;
+        car = new Car();
+
         grass = new Grass();
     }
 
     protected void updateWorld() {
-        wheel1.update(grass);
-        wheel2.update(grass);
-        restrictWheelDistance(wheel1, wheel2);
-    }
-
-    private void restrictWheelDistance(Wheel wheel1, Wheel wheel2) {
-
-        centerX = (wheel1.x + wheel2.x) / 2;
-        centerY = (wheel1.y + wheel2.y) / 2;
-
-        double distance = Math.sqrt((wheel1.x - wheel2.x) * (wheel1.x - wheel2.x) + (wheel1.y - wheel2.y) * (wheel1.y - wheel2.y));
-        int distanceX = Math.abs(wheel1.x - wheel2.x);
-        if (distanceX == 0) distanceX = 1;
-        int distanceY = Math.abs(wheel1.y - wheel2.y);
-        if (distanceY == 0) distanceY = 1;
-
-        double delta = distance - CAR_LENGTH;
-        double deltaX = delta * distanceX / distance;
-        double deltaY = delta * distanceY / distance;
-
-        wheel1.x -= deltaX / 2;
-        wheel2.x += deltaX / 2;
-        wheel1.y -= deltaY / 2;
-        wheel2.y += deltaY / 2;
+        car.update(grass);
     }
 
     class ViewPort extends JPanel {
@@ -112,27 +87,16 @@ public class FallingCar extends JFrame {
             g.drawString("SPACE = Forward", 10, 40);
 
             AffineTransform scrolling = new AffineTransform();
-            scrolling.translate(-wheel1.x + 300, 0);
+            scrolling.translate(-car.getX() + 300, 0);
             graphics2d.setTransform(scrolling);
 
             graphics2d.setStroke(new BasicStroke(10));
             g.setColor(Color.GREEN);
-            g.fillRect(Grass.GRASS_WIDTH, 650 + (Wheel.WHEEL_SIZE / 2), 4500, 300);
+            g.fillRect(Grass.GRASS_WIDTH, 650 + (Car.getWheelSize() / 2), 4500, 300);
 
             grass.draw(g);
 
-            g.setColor(Color.GRAY);
-            graphics2d.setStroke(new BasicStroke(10));
-            g.drawLine(wheel1.x, wheel1.y, wheel2.x, wheel2.y);
-            g.setColor(Color.RED);
-            wheel1.draw(g);
-            g.setColor(Color.BLUE);
-            wheel2.draw(g);
-
-            g.setColor(Color.BLACK);
-            g.fillOval(centerX, centerY, 5, 5);
-            g.fillOval(wheel1.x, wheel1.y, 5, 5);
-            g.fillOval(wheel2.x, wheel2.y, 5, 5);
+            car.draw(g);
         }
     }
 

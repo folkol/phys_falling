@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.util.Random;
 
 
-public class Grass extends Entity {
+public class Grass {
     
     public static int GRASS_WIDTH = 35000;
     int SEGMENT_WIDTH = 100;
@@ -38,7 +38,6 @@ public class Grass extends Entity {
         }
     }
 
-    @Override
     void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
@@ -58,7 +57,7 @@ public class Grass extends Entity {
 
         int grassHeight = (int) (y1 + segmentOffset * (y2 - y1));
 
-        return grassHeight - Wheel.WHEEL_SIZE / 2;
+        return grassHeight - Car.getWheelSize() / 2;
     }
 
 }
