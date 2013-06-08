@@ -115,6 +115,8 @@ public class FallingCar extends JFrame {
             g.fillOval(centerX, centerY, 5, 5);
             g.fillOval(wheel1.x, wheel1.y, 5, 5);
             g.fillOval(wheel2.x, wheel2.y, 5, 5);
+
+            g.drawString("ESC = Restart", 10, 20);
         }
     }
 
