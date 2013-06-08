@@ -28,15 +28,15 @@ public class FallingCar extends JFrame {
         setVisible(true);
         requestFocus();
         addKeyListener(new KeyListener() {
-            
+
             @Override
             public void keyTyped(KeyEvent e) {
             }
-            
+
             @Override
             public void keyReleased(KeyEvent e) {
             }
-            
+
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -47,7 +47,7 @@ public class FallingCar extends JFrame {
 
         initWheels();
 
-        new Timer(1000 / 30, new ActionListener() {
+        new Timer(1000 / 60, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateWorld();
@@ -66,9 +66,9 @@ public class FallingCar extends JFrame {
     }
 
     protected void updateWorld() {
-        restrictWheelDistance(wheel1, wheel2);
         wheel1.update(grass);
         wheel2.update(grass);
+        restrictWheelDistance(wheel1, wheel2);
     }
 
     private void restrictWheelDistance(Wheel wheel1, Wheel wheel2) {
@@ -91,6 +91,7 @@ public class FallingCar extends JFrame {
         wheel2.x += deltaX / 2;
         wheel1.y -= deltaY / 2;
         wheel2.y += deltaY / 2;
+        System.out.println(deltaY);
     }
 
     class ViewPort extends JPanel {
@@ -98,7 +99,7 @@ public class FallingCar extends JFrame {
         public void paintComponent(Graphics g) {
             ((Graphics2D) g).setStroke(new BasicStroke(10));
             g.setColor(Color.GREEN);
-            g.fillRect(0, 650 + 25, 2000, 300);
+            g.fillRect(Grass.GRASS_WIDTH, 650 + (Wheel.WHEEL_SIZE / 2), 2000, 300);
 
             grass.draw(g);
 
@@ -109,7 +110,7 @@ public class FallingCar extends JFrame {
             wheel1.draw(g);
             g.setColor(Color.BLUE);
             wheel2.draw(g);
-            
+
             g.setColor(Color.BLACK);
             g.fillOval(centerX, centerY, 5, 5);
             g.fillOval(wheel1.x, wheel1.y, 5, 5);

@@ -9,7 +9,7 @@ public abstract class Entity {
     public int x;
     public int y;
     public int dx;
-    public int dy;
+    public float dy;
 
     public boolean collides(Entity e) {
         return false;
