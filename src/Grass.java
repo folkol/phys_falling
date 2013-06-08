@@ -17,7 +17,7 @@ public class Grass extends Entity {
     public Grass() {
         segmentX = new int[segments];
         heights = new int[segments];
-        heights[0] = 500;
+        heights[0] = 300;
         segmentX[0] = 0;
         for (int i = 1; i < segments; i++) {
             segmentX[i] = i * SEGMENT_WIDTH;
@@ -27,13 +27,13 @@ public class Grass extends Entity {
 
     @Override
     void draw(Graphics g) {
-        ((Graphics2D) g).setStroke(new BasicStroke(10));
+        ((Graphics2D) g).setStroke(new BasicStroke(20));
         g.setColor(Color.GREEN);
         g.drawPolyline(segmentX, heights, segments);
     }
 
     public int getGrassHeight(int x) {
-        if (x > GRASS_WIDTH - SEGMENT_WIDTH - 1) return 1000;
+        if (x > GRASS_WIDTH - SEGMENT_WIDTH - 1) return 650;
 
         int segment = x / SEGMENT_WIDTH;
         float segmentOffset = (x % SEGMENT_WIDTH) / (float) SEGMENT_WIDTH;

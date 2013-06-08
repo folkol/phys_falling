@@ -1,5 +1,7 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,9 +14,9 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class FallingCar extends JFrame {
 
-    private final Wheel wheel1;
-    private final Grass grass;
-    private final Wheel wheel2;
+    private Wheel wheel1;
+    private Grass grass;
+    private Wheel wheel2;
     private int centerX;
     private int centerY;
 
@@ -22,7 +24,7 @@ public class FallingCar extends JFrame {
         super("Physics test");
         setContentPane(new ViewPort());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1600, 1200);
+        setSize(1600, 800);
         setVisible(true);
         requestFocus();
         addKeyListener(new KeyListener() {
@@ -37,16 +39,13 @@ public class FallingCar extends JFrame {
             
             @Override
             public void keyPressed(KeyEvent e) {
-                wheel1.dy = -20;
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    initWheels();
+                }
             }
         });
 
-        wheel1 = new Wheel();
-        wheel2 = new Wheel();
-        wheel1.x += 200;
-        wheel1.y = 300;
-        wheel2.y = 300;
-        grass = new Grass();
+        initWheels();
 
         new Timer(1000 / 30, new ActionListener() {
             @Override
@@ -57,21 +56,19 @@ public class FallingCar extends JFrame {
         }).start();
     }
 
+    private void initWheels() {
+        wheel1 = new Wheel();
+        wheel2 = new Wheel();
+        wheel1.x += 200;
+        wheel1.y = 300;
+        wheel2.y = 300;
+        grass = new Grass();
+    }
+
     protected void updateWorld() {
         restrictWheelDistance(wheel1, wheel2);
-        wheel1.update();
-        wheel2.update();
-
-        if (wheel1.dy > 0 && wheel1.y > grass.getGrassHeight(wheel1.x)) {
-            wheel1.dy = (int) -(wheel1.dy * 0.5);
-            wheel1.y = grass.getGrassHeight(wheel1.x);
-        }
-
-        if (wheel2.dy > 0 && wheel2.y > grass.getGrassHeight(wheel2.x)) {
-            wheel2.dy = (int) -(wheel2.dy * 0.5);
-            wheel2.y = grass.getGrassHeight(wheel2.x);
-        }
-
+        wheel1.update(grass);
+        wheel2.update(grass);
     }
 
     private void restrictWheelDistance(Wheel wheel1, Wheel wheel2) {
@@ -90,7 +87,6 @@ public class FallingCar extends JFrame {
         double deltaX = delta * distanceX / distance;
         double deltaY = delta * distanceY / distance;
 
-        System.out.println(delta);
         wheel1.x -= deltaX / 2;
         wheel2.x += deltaX / 2;
         wheel1.y -= deltaY / 2;
@@ -100,8 +96,15 @@ public class FallingCar extends JFrame {
     class ViewPort extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
+            ((Graphics2D) g).setStroke(new BasicStroke(10));
+            g.setColor(Color.GREEN);
+            g.fillRect(0, 650 + 25, 2000, 300);
+
             grass.draw(g);
 
+            g.setColor(Color.GRAY);
+            ((Graphics2D) g).setStroke(new BasicStroke(10));
+            g.drawLine(wheel1.x, wheel1.y, wheel2.x, wheel2.y);
             g.setColor(Color.RED);
             wheel1.draw(g);
             g.setColor(Color.BLUE);
