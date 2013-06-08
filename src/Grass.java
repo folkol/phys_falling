@@ -29,14 +29,9 @@ public class Grass extends Entity {
             case 0:
                 heights[i] = 500;
                 break;
-            // case 1:
-            // heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH / 10)
-            // - SEGMENT_WIDTH / 5;
-            // break;
-            // case 2:
-            // heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH / 4) -
-            // SEGMENT_WIDTH / 2;
-            // break;
+            case 1:
+                heights[i] = heights[i - 1] - random.nextInt(SEGMENT_WIDTH / 4) - SEGMENT_WIDTH / 2;
+                break;
             default:
                 heights[i] = heights[i - 1] + random.nextInt(SEGMENT_WIDTH / 10) - SEGMENT_WIDTH / 5;
             }

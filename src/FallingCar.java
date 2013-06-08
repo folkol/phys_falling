@@ -20,7 +20,7 @@ public class FallingCar extends JFrame {
     private Wheel wheel2;
     private int centerX;
     private int centerY;
-    private final double CAR_LENGTH = 100;
+    private final double CAR_LENGTH = 150;
 
     public FallingCar() {
         super("Physics test");
@@ -37,7 +37,7 @@ public class FallingCar extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_D) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     wheel1.forward = false;
                     wheel2.forward = false;
                 }
@@ -45,11 +45,11 @@ public class FallingCar extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     initWheels();
                 }
 
-                if (e.getKeyCode() == KeyEvent.VK_D) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     wheel1.forward = true;
                     wheel2.forward = true;
                 }
@@ -108,13 +108,16 @@ public class FallingCar extends JFrame {
         public void paintComponent(Graphics g) {
             Graphics2D graphics2d = (Graphics2D) g;
 
+            g.drawString("ESCAPE= Restart", 10, 20);
+            g.drawString("SPACE = Forward", 10, 40);
+
             AffineTransform scrolling = new AffineTransform();
             scrolling.translate(-wheel1.x + 300, 0);
             graphics2d.setTransform(scrolling);
 
             graphics2d.setStroke(new BasicStroke(10));
             g.setColor(Color.GREEN);
-            g.fillRect(Grass.GRASS_WIDTH, 650 + (Wheel.WHEEL_SIZE / 2), 2000, 300);
+            g.fillRect(Grass.GRASS_WIDTH, 650 + (Wheel.WHEEL_SIZE / 2), 4500, 300);
 
             grass.draw(g);
 
@@ -130,8 +133,6 @@ public class FallingCar extends JFrame {
             g.fillOval(centerX, centerY, 5, 5);
             g.fillOval(wheel1.x, wheel1.y, 5, 5);
             g.fillOval(wheel2.x, wheel2.y, 5, 5);
-
-            g.drawString("SPACE = Restart", 10, 20);
         }
     }
 
