@@ -55,7 +55,8 @@ public class Car {
         wheel2.x += deltaX / 2;
         wheel1.y -= deltaY / 2;
         wheel2.y += deltaY / 2;
-        System.out.println(String.format("delta: %s,  deltaX: %s, deltaY: %s", delta, deltaX, deltaY));
+        // System.out.println(String.format("delta: %s,  deltaX: %s, deltaY: %s",
+        // delta, deltaX, deltaY));
     }
 
     public int getX() {
@@ -88,9 +89,9 @@ class Wheel {
     public float dy;
 
     private static final double BOUNCYNESS = 0.3;
-    private static final double GRAVITY = 1;
-    public float ACCELERATION = 0.7f;
-    public float MAX_SPEED = 15;
+    private static final double GRAVITY = 0.3f;
+    public float ACCELERATION = 0.8f;
+    public float MAX_SPEED = 20;
     public float SPEED = 0;
     public static final int WHEEL_SIZE = 75;
     private static final float RETARDATION = 0.2f;
@@ -123,6 +124,8 @@ class Wheel {
 
             dy = (int) -(dy * BOUNCYNESS);
             // if (dy < 0.5) dy = 0;
+        }
+        if (y > grassHeight) {
             y = grassHeight;
         }
     }
